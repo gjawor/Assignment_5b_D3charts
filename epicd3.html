@@ -1,83 +1,86 @@
-<!-- Code from d3-graph-gallery.com -->
+code from d3-graph-gallery.com -->
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link rel = "stylesheet"
+      type = "text/css"
+      href = "d3.css"/>
 
-<!-- Load d3.js -->
+<!-- load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
+<!-- create a div where the graph will take place -->
+
+<body>
+
+<!--summary paragraph-->
+<p>
+    Even though the Boston harbor has existed and been in use for a long time, no one
+    was ever cleaning it. The pollution buildup caused extreme damage to the waterways
+    and local ecosystem. In 1972 the Clean Water Act passed which helped motivate a
+    cleanup project for the harbor. While the cost to clean up these polluted spaces
+    is very expensive, estimated at 4.7 billion dollars, the return and benefit from
+    the ecosystem justifies the cost. This study explores monetary values for the
+    ecosystem, as well as the impact that the clean up has had so far. Restoring and
+    maintaining the local ecosystem is important for the many organisms its home to,
+    and also helps raise the value of the land which is between 30 - 100 billion.
+
+</p>
+<!--container to hold the first graph.-->
+<div id="container1">
+    <!--caption -->
+    <p id="caption">
+        Area calculation by land cover in 4 subareas (2013). Here we see that Boston is more
+        than just a city, as large parts of natural ecosystems, especially forests, add to existing land mass.
+    </p>
+    <!--div holding the script to be run-->
+    <div id="viz1">
+        <!--add y axis-->
+        <p id="Yaxis">Acres</p>
+        <!--run -->
+        <script src="graph1.js"></script>
+    </div>
+    <!--add the x axis-->
+    <p id="caption">Land Type</p>
+</div>
+
+<!--graph 2 container-->
+<div id="container2">
+    <!--caption-->
+    <p id="caption">
+        Value of ecosystem services from study area. There are huge amounts of value to
+        these lands as they are worth several billion dollars.
+    </p>
+    <!--div holding for script to be run-->
+    <div id="viz2">
+        <!--add y axis-->
+        <p id="Yaxis">Dollars</p>
+        <!--run-->
+        <script src="graph2.js"></script>
+    </div>
+    <!--add x axis-->
+    <p id="caption">Land Type</p>
+</div>
+<!--3rd graph container-->
+<div id="container3">
+    <!--caption-->
+    <p id="caption">
+        This illustrates the value of ecosystem services with and without cleanup.
+        Although expensive to clean, the return pays for itself and increases
+        the value of the land.
+    </p>
+    <!--div holder for script-->
+    <div id="viz3">
+        <!--add y axis-->
+        <p id="Yaxis">Dollars</p>
+        <!--run-->
+        <script src="graph3.js"></script>
+    </div>
+    <!--Add x-xis-->
+    <p id="caption">With/Without</p>
+</div>
 
 
-<script>
+<a href="https://www.frontiersin.org/articles/10.3389/fmars.2018.00478/full" id="caption">Visit the study here</a>
+</body>
 
-// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 20, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-// Parse the Data
-d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv", function(data) {
-
-  // List of subgroups = header of the csv files = soil condition here
-  var subgroups = data.columns.slice(1)
-
-  // List of groups = species here = value of the first column called group -> I show them on the X axis
-  var groups = d3.map(data, function(d){return(d.group)}).keys()
-
-  // Add X axis
-  var x = d3.scaleBand()
-      .domain(groups)
-      .range([0, width])
-      .padding([0.2])
-  svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).tickSize(0));
-
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, 40])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
-
-  // Another scale for subgroup position?
-  var xSubgroup = d3.scaleBand()
-    .domain(subgroups)
-    .range([0, x.bandwidth()])
-    .padding([0.05])
-
-  // color palette = one color per subgroup
-  var color = d3.scaleOrdinal()
-    .domain(subgroups)
-    .range(['#e41a1c','#377eb8','#4daf4a'])
-
-  // Show the bars
-  svg.append("g")
-    .selectAll("g")
-    // Enter in data = loop group per group
-    .data(data)
-    .enter()
-    .append("g")
-      .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
-    .selectAll("rect")
-    .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-    .enter().append("rect")
-      .attr("x", function(d) { return xSubgroup(d.key); })
-      .attr("y", function(d) { return y(d.value); })
-      .attr("width", xSubgroup.bandwidth())
-      .attr("height", function(d) { return height - y(d.value); })
-      .attr("fill", function(d) { return color(d.key); });
-
-})
-
-</script>
